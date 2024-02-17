@@ -32,5 +32,55 @@ namespace SomeCompany.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public ActionResult Block([FromForm(Name = "userIds[]")] string[] IDs)
+        {
+            var users = _dbContext.Users.ToList();
+            var Ids = IDs;
+
+            foreach(var id in Ids)
+            {
+                var user = users.Find(x => x.Id == id);
+                user.IsBlocked = true;
+
+                _dbContext.Update(user);
+                _dbContext.SaveChanges();
+            }
+            return Json(new { success = true, message = "User blocked successfully" });
+        }
+
+        [HttpPost]
+        public IActionResult UnBlock([FromForm(Name = "UserIds[]")] string[] IDs)
+        {
+            var users = _dbContext.Users.ToList();
+            var Ids = IDs;
+
+            foreach(var id in Ids)
+            {
+                var user = users.Find(x => x.Id == id);
+                user.IsBlocked = false;
+
+                _dbContext.Update(user);
+                _dbContext.SaveChanges();
+            }
+            return Json(new { success = true, message = "User unblocked successfully" });
+        }
+
+        [HttpPost]
+        public IActionResult Delete([FromForm(Name = "UserIds[]")] string[] IDs)
+        {
+            var users = _dbContext.Users.ToList();
+            var Ids = IDs;
+
+            foreach(var id in Ids)
+            {
+                var user = users.Find(x => x.Id == id);
+                _dbContext.Remove(user);
+                _dbContext.SaveChanges();
+            }
+
+            return Json(new { success = true, message = "User unblocked successfully" });
+        }
     }
 }
