@@ -14,7 +14,10 @@
 <table class="table table-striped" id="userTable">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.IsBlocked)</th>
+            <th>
+                <input id="checkAllCheckbox" class="form-check-input" type="checkbox" />
+            </th>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
             <th>@Html.DisplayNameFor(model => model.FullName)</th>
             <th>@Html.DisplayNameFor(model => model.Email)</th>
             <th>@Html.DisplayNameFor(model => model.RegistrationTime)</th>
@@ -30,6 +33,7 @@
                 <td>
                     <input class="form-check-input block-checkbox" type="checkbox" data-user-id="@item.Id"/>
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
                 <td>@Html.DisplayFor(modelItem => item.FullName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.RegistrationTime)</td>
@@ -43,6 +47,11 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#checkAllCheckbox').click(function () {
+            $('.block-checkbox').prop('checked', $(this).prop('checked'));
+        });
+
         $('.block-button').click(function () {
             
             var checkedCheckboxes = $('#userTable').find('.block-checkbox:checked');
@@ -64,11 +73,11 @@
                 data: { userIds: userIds },
                 success: function (data) {
                     if (data.success) {
-                        //location.reload();
-
                         checkedCheckboxes.each(function () {
                             var user_id = $(this).data('user-id');
                             $('#status-' + user_id).text('Blocked');
+                        
+                            location.reload();
                         });
                     } else {
                         console.error(errorThrown)
@@ -103,11 +112,11 @@
                 data: { userIds: userIds },
                 success: function (data) {
                     if (data.success) {
-                        //location.reload();
-
                         checkedCheckBoxes.each(function () {
                             var user_id = $(this).data('user-id');
                             $('#status-' + user_id).text('Active');
+
+                            location.reload();
                         });
                     } else {
                         console.error(errorThrown)
