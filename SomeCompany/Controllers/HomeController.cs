@@ -47,6 +47,7 @@ namespace SomeCompany.Controllers
                 _dbContext.Update(user);
                 _dbContext.SaveChanges();
             }
+
             return Json(new { success = true, message = "User blocked successfully" });
         }
 
@@ -66,6 +67,20 @@ namespace SomeCompany.Controllers
             }
             return Json(new { success = true, message = "User unblocked successfully" });
         }
+
+        //[HttpPost]
+        //public IActionResult UnBlockAll([FromForm(Name = "UserIds[]")] string[] IDs)
+        //{
+        //    var users = _dbContext.Users.ToList();
+
+        //    foreach (var user in users)
+        //    {
+        //        user.IsBlocked = true;
+        //        _dbContext.Update(user);
+        //        _dbContext.SaveChanges();
+        //    }
+        //    return Json(new { success = true, message = "User unblocked successfully" });
+        //}
 
         [HttpPost]
         public IActionResult Delete([FromForm(Name = "UserIds[]")] string[] IDs)

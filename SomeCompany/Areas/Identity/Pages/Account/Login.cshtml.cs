@@ -15,18 +15,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SomeCompany.Models;
+using SomeCompany.Data;
 
 namespace SomeCompany.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
         private readonly SignInManager<UserModel> _signInManager;
+        private readonly UserManager<UserModel> _userManager;
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<UserModel> signInManager, ILogger<LoginModel> logger)
+        private readonly AppDbContext _dbContext;
+        public LoginModel(
+            SignInManager<UserModel> signInManager,
+            ILogger<LoginModel> logger,
+            UserManager<UserModel> userManager,
+            AppDbContext dbContext)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -110,11 +118,21 @@ namespace SomeCompany.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (user != null && user.IsBlocked)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is blocked");
+                    return Page();
+                }
+                
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    user.LastLoginTime = DateTime.Now;
+                    _dbContext.Update(user);
+                    _dbContext.SaveChanges();
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

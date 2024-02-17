@@ -5,9 +5,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <div class="text-start">
-    <button type="submit" class="btn btn-warning block-button">Block <i class="bi bi-lock-fill"></i></button>
-    <button type="submit" class="btn btn-success unblock-button">UnBlock <i class="bi bi-unlock-fill"></i></button>
-    <button type="submit" class="btn btn-danger delete-button">Delete <i class="bi bi-person-x-fill"></i></button>
+    <button type="submit" class="btn btn-danger block-button">Block <i class="bi bi-lock-fill"></i></button>
+    <button type="submit" class="btn btn-success unblock-button"><i class="bi bi-unlock-fill"></i></button>
+    <button type="submit" class="btn btn-warning delete-button"><i class="bi bi-trash-fill"></i></button>
 </div>
 <br />
 
@@ -38,7 +38,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.RegistrationTime)</td>
                 <td>@Html.DisplayFor(modelItem => item.LastLoginTime)</td>
-                <td id="status-@item.Id">@status</td>
+                <td id="status-@item.Id" class="@((status == "Blocked")?"text-danger ":"text-success")"> @status</td>
             </tr>
         }
     <tbody>
@@ -78,6 +78,12 @@
                             $('#status-' + user_id).text('Blocked');
                         
                             location.reload();
+
+                            if (checkedCheckboxes.length === $('.block-checkbox').length) {
+                                // Redirect to login page
+                                window.location.href = 'Identity/Account/Login';
+                                return;
+                            }
                         });
                     } else {
                         console.error(errorThrown)
