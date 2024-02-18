@@ -76,15 +76,24 @@
                         checkedCheckboxes.each(function () {
                             var user_id = $(this).data('user-id');
                             $('#status-' + user_id).text('Blocked');
-                        
-                            location.reload();
-
-                            if (checkedCheckboxes.length === $('.block-checkbox').length) {
-                                // Redirect to login page
-                                window.location.href = 'Identity/Account/Login';
-                                return;
-                            }
                         });
+
+                        location.reload();
+
+                        if (checkedCheckboxes.length === $('.block-checkbox').length) {
+                            $.ajax({
+                                url: '/Identity/Account/Logout',
+                                type: 'POST',
+                                success: function () {
+                                        window.location.href = '/Identity/Account/Login';
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error('AJAX error:', textStatus, errorThrown);
+                                    alert('An error occurred while logging out. Please try again later.');
+                                }
+                            });
+                            return;
+                        }
                     } else {
                         console.error(errorThrown)
                         alert('Error: ' + data.message);
