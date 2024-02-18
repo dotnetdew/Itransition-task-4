@@ -5,12 +5,12 @@
 }
 
 <header>
-    <h1>@ViewData["Title"]</h1>
     @{
         if (User.Identity?.IsAuthenticated ?? false)
         {
+            <h3 class="text-danger">You have to logout because you blocked all users</h3>
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
+                <button type="submit" class="nav-link btn btn-link text-white btn-primary">Click here to Logout</button>
             </form>
         }
         else

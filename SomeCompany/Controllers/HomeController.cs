@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SomeCompany.Data;
 using SomeCompany.Models;
@@ -10,9 +11,11 @@ namespace SomeCompany.Controllers
     public class HomeController : Controller
     {
         private readonly AppDbContext _dbContext;
-        public HomeController(AppDbContext dbContext)
+        private readonly SignInManager<UserModel> _signInManager;
+        public HomeController(AppDbContext dbContext, SignInManager<UserModel> signInManager)
         {
             _dbContext = dbContext;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -96,6 +99,22 @@ namespace SomeCompany.Controllers
             }
 
             return Json(new { success = true, message = "User unblocked successfully" });
+        }
+
+        [HttpPost]
+        public IActionResult LogOut(string url = null)
+        {
+            _signInManager.SignOutAsync();
+            if (url != null)
+            {
+                return LocalRedirect(url);
+            }
+            else
+            {
+                // This needs to be a redirect so that the browser performs a new
+                // request and the identity for the user gets updated.
+                return RedirectToAction("Login", "Account");
+            }
         }
     }
 }

@@ -81,18 +81,7 @@
                         location.reload();
 
                         if (checkedCheckboxes.length === $('.block-checkbox').length) {
-                            $.ajax({
-                                url: '/Identity/Account/Logout',
-                                type: 'POST',
-                                success: function () {
-                                        window.location.href = '/Identity/Account/Login';
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.error('AJAX error:', textStatus, errorThrown);
-                                    alert('An error occurred while logging out. Please try again later.');
-                                }
-                            });
-                            return;
+                            window.location.href = '/Identity/Account/Logout';
                         }
                     } else {
                         console.error(errorThrown)
