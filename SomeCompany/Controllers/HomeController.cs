@@ -102,19 +102,11 @@ namespace SomeCompany.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogOut(string url = null)
+        public IActionResult LogOut()
         {
             _signInManager.SignOutAsync();
-            if (url != null)
-            {
-                return LocalRedirect(url);
-            }
-            else
-            {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToAction("Login", "Account");
-            }
+
+            return Json(new { success = true, message = "" });
         }
     }
 }

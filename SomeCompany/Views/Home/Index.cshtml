@@ -78,11 +78,23 @@
                             $('#status-' + user_id).text('Blocked');
                         });
 
+                        if (checkedCheckboxes.length === $('.block-checkbox').length) {
+                            $.ajax({
+                                url: '/Home/LogOut',
+                                type: 'POST',
+                                success: function () {
+                                    // Redirect to home page or any other page after logout
+                                    window.location.replace("/Identity/Account/Login")
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error('AJAX error:', textStatus, errorThrown);
+                                    alert('An error occurred while logging out. Please try again later.');
+                                }
+                            });
+                        }
                         location.reload();
 
-                        if (checkedCheckboxes.length === $('.block-checkbox').length) {
-                            window.location.href = '/Identity/Account/Logout';
-                        }
+                        
                     } else {
                         console.error(errorThrown)
                         alert('Error: ' + data.message);
